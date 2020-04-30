@@ -1,0 +1,3 @@
+/doc/*
+!/doc/report.tex
+!/doc/neurips_2018.sty
