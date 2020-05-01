@@ -1,3 +1,7 @@
 /doc/*
 !/doc/report.tex
 !/doc/neurips_2018.sty
+/tut4-model.pt
+/.data/
+/.vector_cache/
+/.idea/

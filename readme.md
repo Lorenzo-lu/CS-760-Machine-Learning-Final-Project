@@ -15,6 +15,8 @@
 
 ### How to use
 
+```python CNN/CNN.py --static```
+
 ##### CNN
 
 ##### RNN
