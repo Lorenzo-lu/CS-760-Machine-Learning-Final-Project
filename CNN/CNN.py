@@ -8,10 +8,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import time
+import math
 
 parser = argparse.ArgumentParser(description='CNN')
 parser.add_argument('--static', action='store_true', help='make word2vec trainable' )
-opt = parser.parse_args()
+parser.add_argument('--pooling_chunk',default=1, type=int, help='number of split of feature map')
+parser.add_argument('--k_max',default=1, type=int, help='select the k max feature while pooling')
+arg = parser.parse_args()
 
 
 SEED = 1234
@@ -52,7 +55,7 @@ class CNN(nn.Module):
         super().__init__()
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
-        if opt.static:
+        if arg.static:
             for p in self.embedding.parameters():
                 p.requires_grad = False
         self.convs = nn.ModuleList([
@@ -62,7 +65,10 @@ class CNN(nn.Module):
             for fs in filter_sizes
         ])
 
-        self.fc = nn.Linear(len(filter_sizes) * n_filters, output_dim)
+        if arg.k_max == 1:
+            self.fc = nn.Linear(len(filter_sizes) * n_filters * arg.pooling_chunk, output_dim)
+        else:
+            self.fc = nn.Linear(len(filter_sizes) * n_filters * arg.k_max, output_dim)
 
         self.dropout = nn.Dropout(dropout)
 
@@ -74,11 +80,23 @@ class CNN(nn.Module):
         # embedded = [batch size, 1, sent len, emb dim]
         conved = [F.relu(conv(embedded)).squeeze(3) for conv in self.convs]
         # conved_n = [batch size, n_filters, sent len - filter_sizes[n] + 1]
-        pooled = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]
-        # pooled_n = [batch size, n_filters]
+        if arg.k_max == 1:
+            pooled = [F.adaptive_max_pool1d(conv, arg.pooling_chunk) for conv in conved]
+            # pooled_n = [batch size, n_filters, pooling_chunk]
+            pooled = [pool.view(pool.shape[0], pool.shape[1] * pool.shape[2]) for pool in pooled]
+            # pooled_n = [batch size, n_filters * pooling_chunk]
+        else:
+            pooled = [self.kmax_pooling(x = conv, dim = 2, k = arg.k_max) for conv in conved]
+            # pooled_n = [batch size, n_filters, k_max]
+            pooled = [pool.view(pool.shape[0], pool.shape[1] * pool.shape[2]) for pool in pooled]
+            # pooled_n = [batch size, n_filters * k_max]
         cat = self.dropout(torch.cat(pooled, dim=1))
-        # cat = [batch size, n_filters * len(filter_sizes)]
+        # cat = [batch size, n_filters * len(filter_sizes) * pooling_chunk]
         return self.fc(cat)
+
+    def kmax_pooling(self, x, dim, k):
+        index = x.topk(k, dim=dim)[1].sort(dim=dim)[0]
+        return x.gather(dim, index)
 
 
 INPUT_DIM = len(TEXT.vocab)
@@ -178,7 +196,6 @@ for epoch in range(N_EPOCHS):
 
     train_loss, train_acc = train(model, train_iterator, optimizer, criterion)
     valid_loss, valid_acc = evaluate(model, valid_iterator, criterion)
-    test_loss, test_acc = evaluate(model, test_iterator, criterion)
 
     end_time = time.time()
 
@@ -191,5 +208,7 @@ for epoch in range(N_EPOCHS):
     print(f'Epoch: {epoch + 1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc * 100:.2f}%')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc * 100:.2f}%')
-    print(f'\t Test. Loss: {test_loss:.3f} |  Test. Acc: {test_acc * 100:.2f}%')
+
+test_loss, test_acc = evaluate(model, test_iterator, criterion)
+print(f'\t Test. Loss: {test_loss:.3f} |  Test. Acc: {test_acc * 100:.2f}%')
 
