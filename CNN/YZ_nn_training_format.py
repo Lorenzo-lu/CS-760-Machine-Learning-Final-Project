@@ -14,8 +14,8 @@ import torch.nn as nn;
 
 import numpy as np;
 import matplotlib.pyplot as plt;
-import pandas as pd;
-pd.options.mode.chained_assignment = None; ## avoid warning
+#import pandas as pd;
+#pd.options.mode.chained_assignment = None; ## avoid warning
 #from datetime import datetime;
 import time;
 
