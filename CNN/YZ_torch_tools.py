@@ -42,6 +42,8 @@ class YZ_nn_model(nn.Module):
             #else:
                 #X = self.layers[i](X); 
             X = self.layers[i](X);
+            #if len(X) > 1:
+                #X = X[0];
         return X;
 #==============================================================================
 class Permute(nn.Module):
@@ -66,6 +68,22 @@ class Reshape(nn.Module):
         self.shape = shape;
     def forward(self, x):
         return x.view(self.shape);   
+    
+class Costum_module_multi_out(nn.Module):
+    def __init__(self, mod):
+        super(Costum_module_multi_out, self).__init__();
+        self.mod = mod;
+    def forward(self,x):
+        out,_ = self.mod(x);
+        return out;
+class Costum_module_mono_out(nn.Module):
+    def __init__(self, mod):
+        super(Costum_module_mono_out, self).__init__();
+        self.mod = mod;
+    def forward(self,x):
+        out = self.mod(x);
+        return out;
+    
     
     
 #==============================================================================    
@@ -137,6 +155,24 @@ class YZ_nn_layer:
 
         Seq_item.append(nn.Sequential(*seq));
         self.Seq.append(Seq_item);
+        
+    def Insert_Seq(self, out_seq, in_size, out_size):
+        if self.n_nodes[-1] != in_size:
+            print("Dim mismatch! Wrong input Module.");
+            return False;
+        else:
+            Seq_item = [];
+            Seq_item.append('YIZHOU_layer'); 
+            if out_seq[0] == 1:
+                Seq_item.append(nn.Sequential(Costum_module_mono_out(out_seq[1])));
+            elif out_seq[0] == 2:
+                Seq_item.append(nn.Sequential(Costum_module_multi_out(out_seq[1])));
+            else:
+                print("Wrong Module (Please check how many outputs)");
+                return;
+            #Seq_item.append(nn.Sequential(out_seq));  
+            self.Seq.append(Seq_item);
+            self.n_nodes.append(out_size);        
                 
     def Show(self):
         print(self.Seq);
