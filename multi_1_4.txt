@@ -1,0 +1,62 @@
+The model has 2,741,701 trainable parameters
+Epoch: 01 | Epoch Time: 0m 34s
+	Train Loss: 0.603 | Train Acc: 66.21%
+	 Val. Loss: 0.417 |  Val. Acc: 80.94%
+Epoch: 02 | Epoch Time: 0m 33s
+	Train Loss: 0.359 | Train Acc: 84.22%
+	 Val. Loss: 0.315 |  Val. Acc: 86.69%
+Epoch: 03 | Epoch Time: 0m 35s
+	Train Loss: 0.259 | Train Acc: 89.27%
+	 Val. Loss: 0.292 |  Val. Acc: 87.62%
+Epoch: 04 | Epoch Time: 0m 35s
+	Train Loss: 0.185 | Train Acc: 92.98%
+	 Val. Loss: 0.296 |  Val. Acc: 87.84%
+Epoch: 05 | Epoch Time: 0m 36s
+	Train Loss: 0.124 | Train Acc: 95.58%
+	 Val. Loss: 0.318 |  Val. Acc: 87.73%
+Epoch: 06 | Epoch Time: 0m 36s
+	Train Loss: 0.083 | Train Acc: 97.03%
+	 Val. Loss: 0.322 |  Val. Acc: 88.58%
+Epoch: 07 | Epoch Time: 0m 37s
+	Train Loss: 0.053 | Train Acc: 98.24%
+	 Val. Loss: 0.354 |  Val. Acc: 88.32%
+Epoch: 08 | Epoch Time: 0m 36s
+	Train Loss: 0.036 | Train Acc: 98.87%
+	 Val. Loss: 0.397 |  Val. Acc: 88.17%
+Epoch: 09 | Epoch Time: 0m 36s
+	Train Loss: 0.026 | Train Acc: 99.10%
+	 Val. Loss: 0.450 |  Val. Acc: 88.49%
+Epoch: 10 | Epoch Time: 0m 37s
+	Train Loss: 0.021 | Train Acc: 99.35%
+	 Val. Loss: 0.487 |  Val. Acc: 88.01%
+Epoch: 11 | Epoch Time: 0m 37s
+	Train Loss: 0.016 | Train Acc: 99.49%
+	 Val. Loss: 0.545 |  Val. Acc: 87.64%
+Epoch: 12 | Epoch Time: 0m 37s
+	Train Loss: 0.015 | Train Acc: 99.57%
+	 Val. Loss: 0.641 |  Val. Acc: 86.87%
+Epoch: 13 | Epoch Time: 0m 37s
+	Train Loss: 0.015 | Train Acc: 99.53%
+	 Val. Loss: 0.582 |  Val. Acc: 87.91%
+Epoch: 14 | Epoch Time: 0m 37s
+	Train Loss: 0.017 | Train Acc: 99.46%
+	 Val. Loss: 0.614 |  Val. Acc: 87.69%
+Epoch: 15 | Epoch Time: 0m 37s
+	Train Loss: 0.013 | Train Acc: 99.53%
+	 Val. Loss: 0.633 |  Val. Acc: 87.87%
+Epoch: 16 | Epoch Time: 0m 37s
+	Train Loss: 0.011 | Train Acc: 99.63%
+	 Val. Loss: 0.695 |  Val. Acc: 87.95%
+Epoch: 17 | Epoch Time: 0m 37s
+	Train Loss: 0.015 | Train Acc: 99.52%
+	 Val. Loss: 0.731 |  Val. Acc: 87.86%
+Epoch: 18 | Epoch Time: 0m 38s
+	Train Loss: 0.014 | Train Acc: 99.53%
+	 Val. Loss: 0.891 |  Val. Acc: 86.46%
+Epoch: 19 | Epoch Time: 0m 38s
+	Train Loss: 0.012 | Train Acc: 99.56%
+	 Val. Loss: 0.830 |  Val. Acc: 87.57%
+Epoch: 20 | Epoch Time: 0m 38s
+	Train Loss: 0.011 | Train Acc: 99.66%
+	 Val. Loss: 0.841 |  Val. Acc: 87.37%
+Test. Loss: 1.053 |  Test. Acc: 84.70% |  Test. precision: 87.40%|  Test. recall: 81.10% |  Test. F1: 84.14
