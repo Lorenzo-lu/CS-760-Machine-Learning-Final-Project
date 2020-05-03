@@ -92,6 +92,8 @@ class YZ_nn_layer:
                     seq.append(Torch_max());
             elif layer[i][0] == 'Permute':
                 seq.append(Permute());
+            elif layer[i][0] == 'Reshape':
+                seq.append(Reshape(layer[i][1]));
 
             elif layer[i][0] == 'Sigmoid':
                 seq.append(nn.Sigmoid());
@@ -180,7 +182,7 @@ class YZ_nn_optimize:
         if ratio == 1:
             bar += ' (^_^)/ Done!'
         if comments != False:
-            bar += ('\n' + str(comments));
+            bar = (str(comments) + '\n' + bar);
         if overwrite == True:
             print('\r', end='');
         else:
@@ -224,7 +226,8 @@ class YZ_nn_optimize:
 
 
     def Optimizing(self, lr = 1e-3, criterion = False, optimizer = False, 
-                   epochs = False, plot_epoch = False):
+                   epochs = False, plot_epoch = False, bar_overwrite = True,
+                   show_time_used = False):
         if criterion == False:
             criterion = nn.BCEWithLogitsLoss();
         self.criterion = criterion;
@@ -249,15 +252,14 @@ class YZ_nn_optimize:
             if it%plot_epoch  == 0:
                 dt = time.time() - start;
                 if self.test_iter != False:
-                    nn_comments = "Epoch (%d / %d)...Train_Loss: %.3e...\
-                        Test_loss: %.3e...Duration: %.3e sec"%(it+1, epochs,\
-                        train_loss, test_loss, dt);
+                    nn_comments = "Epoch (%d / %d)...Train_Loss: %.3e...Test_loss: %.3e...Duration: %.3e sec"\
+                    %(it+1, epochs,train_loss, test_loss, dt);
                 else:
-                    nn_comments = "Epoch (%d / %d)...Train_Loss: %.3e...\
-                        ...Duration: %.3e sec"%(it+1, epochs,\
-                        train_loss,  dt);
+                    nn_comments = "Epoch (%d / %d)...Train_Loss: %.3e......Duration: %.3e sec"\
+                    %(it+1, epochs, train_loss,  dt);
                 
-                self.YZ_process_bar((it+1)/epochs*1.0, comments=nn_comments, overwrite = False);
+                self.YZ_process_bar((it+1)/epochs*1.0, comments=nn_comments, 
+                                    overwrite = bar_overwrite);
 
                 self.train_losses.append(train_loss);
                 if self.test_iter != False:
@@ -277,21 +279,24 @@ class YZ_nn_optimize:
         plt.ylabel('Loss');
         plt.legend();
         plt.title('Optimization Curve');
-
-        plt.figure();
-        plt.plot(self.performance, marker = 's');
-        plt.xlabel('Epochs/%s'%(plot_epoch));
-        plt.ylabel('Time used');
-        #plt.legend();
-        plt.title('Performance');
         
-        plt.show();
+        if show_time_used == True:
+            plt.figure();
+            plt.plot(self.performance, marker = 's');
+            plt.xlabel('Epochs/%s'%(plot_epoch));
+            plt.ylabel('Time used');
+            #plt.legend();
+            plt.title('Performance');
 
         if self.job == 'classification':
+            print('\n');
+            print('**********************************************************');
             print("Training:");
             self.CR_train = self.Classification_rate(self.train_iter);
             if self.test_iter != False:
                 print("Testing:");
                 self.CR_test = self.Classification_rate(self.test_iter);
+            print('**********************************************************');
+        plt.show();
 
 
