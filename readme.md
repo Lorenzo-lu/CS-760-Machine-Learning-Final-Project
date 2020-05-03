@@ -8,15 +8,15 @@
 
 
 ### Result
-
+Please see txt in CNN.
 ##### CNN
 
 ##### RNN
 
 ### How to use
 
-```python CNN/CNN.py --static```
-
 ##### CNN
+```bash ./test.sh```
+Config runtime parameters in script.
 
 ##### RNN
