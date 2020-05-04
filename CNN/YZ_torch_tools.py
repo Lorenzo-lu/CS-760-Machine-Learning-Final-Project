@@ -231,7 +231,7 @@ class YZ_nn_optimize:
         loss_list = [];
         for inputs, targets in data_iter:
             if self.job == 'classification':
-                targets = torch.nn.functional.one_hot(targets, self.K_class).float();   
+                targets = torch.nn.functional.one_hot(targets.int(), self.K_class).float();   
             elif self.job == 'regression':
                 targets = targets.view(-1,1).float();
             inputs, targets  =  inputs.to(self.device), targets.to(self.device);
@@ -250,7 +250,7 @@ class YZ_nn_optimize:
         n_correct = 0.0;
         n_total = 0.0;
         for inputs, targets in data_iter:
-            targets = torch.nn.functional.one_hot(targets, self.K_class).float();
+            targets = torch.nn.functional.one_hot(targets.int(), self.K_class).float();
             outputs = self.model(inputs);
             prediction = (torch.argmax(outputs, dim=1));
 
