@@ -88,6 +88,7 @@ criterion = criterion.to(device)
 # setting some vars
 N_EPOCHS = 20
 best_valid_loss = float('inf')
+last_valid_loss = float('inf')
 
 model = model.to(device)
 
@@ -109,6 +110,11 @@ for epoch in range(N_EPOCHS):
     print(f'Epoch: {epoch + 1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
     print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc * 100:.2f}%')
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc * 100:.2f}%')
+
+    if valid_loss >= last_valid_loss:
+        break
+    else:
+        last_valid_loss = valid_loss
 
 test_loss, test_acc, precision, recall, F1 = utils.test_evaluate(model, test_iterator, criterion)
 print(f'Test. Loss: {test_loss:.3f} |  Test. Acc: {test_acc * 100:.2f}% |  Test. precision: {precision * 100:.2f}%'
