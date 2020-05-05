@@ -231,7 +231,7 @@ class YZ_nn_optimize:
         loss_list = [];
         for inputs, targets in data_iter:
             if self.job == 'classification':
-                targets = torch.nn.functional.one_hot(targets.int(), self.K_class).float();   
+                targets = torch.nn.functional.one_hot(targets, self.K_class).float();   
             elif self.job == 'regression':
                 targets = targets.view(-1,1).float();
             inputs, targets  =  inputs.to(self.device), targets.to(self.device);
@@ -242,6 +242,9 @@ class YZ_nn_optimize:
             if process == 'training':
                 loss.backward();
                 self.optimizer.step();
+            #elif process == 'testing':
+                #print("==<>In eval mode")
+                #self.model.eval();
 
             loss_list.append(loss.item());
         return np.mean(loss_list);
@@ -250,7 +253,7 @@ class YZ_nn_optimize:
         n_correct = 0.0;
         n_total = 0.0;
         for inputs, targets in data_iter:
-            targets = torch.nn.functional.one_hot(targets.int(), self.K_class).float();
+            targets = torch.nn.functional.one_hot(targets, self.K_class).float();
             outputs = self.model(inputs);
             prediction = (torch.argmax(outputs, dim=1));
 
@@ -281,8 +284,10 @@ class YZ_nn_optimize:
         start = time.time();## set the timer starting!
 
         for it in range(epochs):
+            self.model.train()
             train_loss = self.Step_gradient_descent(self.train_iter, process='training');
             if self.test_iter != False:
+                self.model.eval()
                 test_loss = self.Step_gradient_descent(self.test_iter, process='testing');
 
             if it%plot_epoch  == 0:
