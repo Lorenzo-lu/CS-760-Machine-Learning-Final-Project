@@ -8,8 +8,8 @@
 
 
 ### Result
-Please see txt in CNN.
 ##### CNN
+Please see txt in CNN. For each `XXX_m_n.txt`, `XXX` means how to handle input word embedding, `multi`: use 2 channels, one static and one non static channel; `stat` and `non_stat` means static and non static respectively. `m` means the number of chunks while pooling(corresponding to chunk max pooling). `n` means how many max values are kept during pooling(corresponding to k max pooling).
 
 ##### RNN
 
