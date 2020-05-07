@@ -70,13 +70,26 @@ print(f'The model has {utils.count_parameters(model):,} trainable parameters')
 
 # setting embedding
 pretrained_embeddings = TEXT.vocab.vectors
-model.static_embedding.weight.data.copy_(pretrained_embeddings)
-model.non_static_embedding.weight.data.copy_(pretrained_embeddings)
-UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
-model.static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
-model.static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
-model.non_static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
-model.non_static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+if arg.embedding_strategy == 'multi':
+    model.static_embedding.weight.data.copy_(pretrained_embeddings)
+    model.non_static_embedding.weight.data.copy_(pretrained_embeddings)
+    UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
+    model.static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+    model.static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+    model.non_static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+    model.non_static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+elif arg.embedding_strategy == 'static':
+    model.static_embedding.weight.data.copy_(pretrained_embeddings)
+    UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
+    model.static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+    model.static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+else:
+    model.non_static_embedding.weight.data.copy_(pretrained_embeddings)
+    UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
+    model.non_static_embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+    model.non_static_embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+
+
 
 # setting optimizer
 optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()))

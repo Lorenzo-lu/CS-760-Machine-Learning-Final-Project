@@ -11,10 +11,15 @@ class CNN(nn.Module):
         self.embedding_strategy = embedding_strategy
         self.pooling_chunk = pooling_chunk
         self.k_max = k_max
-
-        self.static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
-        self.non_static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
-        self.static_embedding.weight.requires_grad = False
+        if embedding_strategy == 'multi':
+            self.static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
+            self.non_static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
+            self.static_embedding.weight.requires_grad = False
+        elif embedding_strategy == 'static':
+            self.static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
+            self.static_embedding.weight.requires_grad = False
+        else :
+            self.non_static_embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=pad_idx)
 
         in_channels = 1
         if embedding_strategy == 'multi':
